@@ -1,78 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { productsAPI } from '../services/api';
 
 function Products() {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const allProducts = [
-    {
-      id: 1,
-      name: "Ocean Breeze",
-      price: "₹1,200",
-      description: "Fresh aquatic notes with citrus undertones",
-      category: "fresh",
-      image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=300&h=400&fit=crop"
-    },
-    {
-      id: 2,
-      name: "Rose Garden",
-      price: "₹1,500",
-      description: "Romantic floral blend with rose petals",
-      category: "floral",
-      image: "https://images.unsplash.com/photo-1592945403244-b3faa12c5c0b?w=300&h=400&fit=crop"
-    },
-    {
-      id: 3,
-      name: "Mystic Woods",
-      price: "₹1,800",
-      description: "Earthy sandalwood with vanilla notes",
-      category: "woody",
-      image: "https://images.unsplash.com/photo-1615639164213-aab04da93c7c?w=300&h=400&fit=crop"
-    },
-    {
-      id: 4,
-      name: "Lavender Dreams",
-      price: "₹1,300",
-      description: "Calming lavender with herbal notes",
-      category: "fresh",
-      image: "https://images.unsplash.com/photo-1590736969955-71cc94901354?w=300&h=400&fit=crop"
-    },
-    {
-      id: 5,
-      name: "Amber Nights",
-      price: "₹2,000",
-      description: "Warm amber with oriental spices",
-      category: "oriental",
-      image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=300&h=400&fit=crop"
-    },
-    {
-      id: 6,
-      name: "Citrus Sunrise",
-      price: "₹1,100",
-      description: "Bright citrus with bergamot",
-      category: "fresh",
-      image: "https://images.unsplash.com/photo-1592945403244-b3faa12c5c0b?w=300&h=400&fit=crop"
-    }
-  ];
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const data = await productsAPI.getAll();
+        setProducts(data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        setError('Failed to load products');
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchProducts();
+  }, []);
+  // Categories based on database schema
   const categories = [
     { id: 'all', name: 'All Products' },
-    { id: 'fresh', name: 'Fresh & Citrus' },
-    { id: 'floral', name: 'Floral' },
-    { id: 'woody', name: 'Woody' },
-    { id: 'oriental', name: 'Oriental' }
+    { id: 'perfumes', name: 'Perfumes' },
+    { id: 'candles', name: 'Candles' },
+    { id: 'diffusers', name: 'Diffusers' },
+    { id: 'soaps', name: 'Soaps' }
   ];
 
-  const filteredProducts = allProducts.filter(product => {
+  const filteredProducts = products.filter(product => {
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchTerm.toLowerCase());
+      product.description.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
   return (
-    <div style={{ 
-      fontFamily: 'Arial, sans-serif', 
+    <div style={{
+      fontFamily: 'Arial, sans-serif',
       backgroundColor: '#f8f9fa',
       minHeight: '100vh',
       padding: '20px 0'
@@ -167,13 +139,40 @@ function Products() {
         </div>
       </div>
 
+      {/* Loading and Error States */}
+      {loading && (
+        <div style={{
+          textAlign: 'center',
+          padding: '60px 20px',
+          color: '#666'
+        }}>
+          <h3 style={{ fontSize: '1.5rem', marginBottom: '10px' }}>
+            Loading products...
+          </h3>
+          <p>Please wait while we fetch our collection</p>
+        </div>
+      )}
+
+      {error && (
+        <div style={{
+          textAlign: 'center',
+          padding: '60px 20px',
+          color: '#dc3545'
+        }}>
+          <h3 style={{ fontSize: '1.5rem', marginBottom: '10px' }}>
+            Error loading products
+          </h3>
+          <p>{error}</p>
+        </div>
+      )}
+
       {/* Products Grid */}
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
         padding: '0 20px'
       }}>
-        {filteredProducts.length === 0 ? (
+        {!loading && !error && filteredProducts.length === 0 ? (
           <div style={{
             textAlign: 'center',
             padding: '60px 20px',
@@ -191,26 +190,28 @@ function Products() {
             gap: '30px'
           }}>
             {filteredProducts.map((product) => (
-              <div key={product.id} style={{
-                backgroundColor: 'white',
-                borderRadius: '15px',
-                padding: '20px',
-                boxShadow: '0 5px 20px rgba(0,0,0,0.1)',
-                transition: 'all 0.3s ease',
-                cursor: 'pointer',
-                textAlign: 'center'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-10px)';
-                e.target.style.boxShadow = '0 15px 40px rgba(0,0,0,0.15)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 5px 20px rgba(0,0,0,0.1)';
-              }}
+              <div key={product._id}
+                onClick={() => navigate(`/products/${product._id}`)}
+                style={{
+                  backgroundColor: 'white',
+                  borderRadius: '15px',
+                  padding: '20px',
+                  boxShadow: '0 5px 20px rgba(0,0,0,0.1)',
+                  transition: 'all 0.3s ease',
+                  cursor: 'pointer',
+                  textAlign: 'center'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-10px)';
+                  e.target.style.boxShadow = '0 15px 40px rgba(0,0,0,0.15)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 5px 20px rgba(0,0,0,0.1)';
+                }}
               >
-                <img 
-                  src={product.image} 
+                <img
+                  src={product.image}
                   alt={product.name}
                   style={{
                     width: '100%',
@@ -242,7 +243,7 @@ function Products() {
                   marginBottom: '15px',
                   fontWeight: '700'
                 }}>
-                  {product.price}
+                  ₹{product.price}
                 </p>
                 <button style={{
                   backgroundColor: '#667eea',
@@ -256,14 +257,14 @@ function Products() {
                   transition: 'all 0.3s ease',
                   textTransform: 'uppercase'
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = '#5a6fd8';
-                  e.target.style.transform = 'scale(1.05)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = '#667eea';
-                  e.target.style.transform = 'scale(1)';
-                }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = '#5a6fd8';
+                    e.target.style.transform = 'scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = '#667eea';
+                    e.target.style.transform = 'scale(1)';
+                  }}
                 >
                   Add to Cart
                 </button>

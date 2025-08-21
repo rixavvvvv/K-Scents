@@ -29,10 +29,6 @@ dist-ssr
 node_modules/
 */node_modules/
 
-# Environment variables
-.env
-backend/.env
-
 # Build files
 dist/
 build/

@@ -6,12 +6,12 @@ const CartContext = createContext();
 const cartReducer = (state, action) => {
   switch (action.type) {
     case 'ADD_TO_CART':
-      const existingItem = state.items.find(item => item.id === action.payload.id);
+      const existingItem = state.items.find(item => item._id === action.payload._id);
       if (existingItem) {
         return {
           ...state,
           items: state.items.map(item =>
-            item.id === action.payload.id
+            item._id === action.payload._id
               ? { ...item, quantity: item.quantity + (action.payload.quantity || 1) }
               : item
           )
@@ -26,14 +26,14 @@ const cartReducer = (state, action) => {
     case 'REMOVE_FROM_CART':
       return {
         ...state,
-        items: state.items.filter(item => item.id !== action.payload)
+        items: state.items.filter(item => item._id !== action.payload)
       };
 
     case 'UPDATE_QUANTITY':
       return {
         ...state,
         items: state.items.map(item =>
-          item.id === action.payload.id
+          item._id === action.payload.id
             ? { ...item, quantity: action.payload.quantity }
             : item
         )
@@ -99,7 +99,10 @@ export const CartProvider = ({ children }) => {
 
   const getCartTotal = () => {
     return state.items.reduce((total, item) => {
-      const price = parseFloat(item.price.replace('₹', '').replace(',', ''));
+      // Handle both string and number price formats
+      const price = typeof item.price === 'string'
+        ? parseFloat(item.price.replace('₹', '').replace(',', ''))
+        : item.price;
       return total + (price * item.quantity);
     }, 0);
   };
