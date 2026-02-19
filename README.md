@@ -1,12 +1,81 @@
-# React + Vite
+K-Scents – Premium Fragrance E-Commerce Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+K-Scents is a modern e-commerce web application for browsing and purchasing premium perfumes and fragrances.
+It provides users with a seamless shopping experience, product exploration, and an intuitive UI.
 
-Currently, two official plugins are available:
+📌 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🛍️ Browse premium fragrance collections
 
-## Expanding the ESLint configuration
+🔍 Product listing with detailed descriptions
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+🛒 Add to cart functionality
+
+💳 Checkout workflow
+
+📱 Fully responsive design
+
+🎨 Modern and clean UI
+
+⚡ Fast loading performance
+
+🛠️ Tech Stack
+
+Frontend
+
+React.js
+
+Backend
+
+Node.js
+
+Express.js
+
+Database
+
+MongoDB
+
+📂 Project Structure
+K-Scents/
+│
+├── client/          # Frontend source code
+├── server/          # Backend source code
+├── public/          # Static assets
+└── README.md
+
+⚙️ Installation & Setup
+1️⃣ Clone the repository
+git clone https://github.com/rixavvvvv/K-Scents.git
+cd K-Scents
+2️⃣ Install dependencies
+npm install
+3️⃣ Run the application
+npm start
+
+The app will run on:
+
+http://localhost:3000
+
+Example format:
+
+🎯 Future Enhancements
+
+🔐 User authentication & authorization
+
+💳 Payment gateway integration
+
+🧾 Order history tracking
+
+⭐ Product reviews & ratings
+
+🛠️ Admin dashboard
+
+👨‍💻 Author
+
+Rishabh
+Final Year CSE Student | Full Stack Developer
+📌 GitHub: https://github.com/rixavvvvv
+
+📜 License
+
+This project is open-source and available under the MIT License.
