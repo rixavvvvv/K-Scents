@@ -3,15 +3,6 @@
 K-Scents is a modern e-commerce web application designed for browsing and purchasing premium perfumes and fragrances.  
 It provides users with a seamless shopping experience, elegant UI, and responsive design.
 
----
-
-## 🚀 Live Demo
-
-🔗 **Live Website:** [Add Your Deployment Link Here]  
-📂 **GitHub Repository:** https://github.com/rixavvvvv/K-Scents  
-
----
-
 ## 📌 Features
 
 - 🛍️ Browse premium fragrance collections
@@ -27,16 +18,14 @@ It provides users with a seamless shopping experience, elegant UI, and responsiv
 ## 🛠️ Tech Stack
 
 ### Frontend
-- HTML5
-- CSS3
 - JavaScript
-- React.js *(Remove if not used)*
+- React.js
 
-### Backend *(If applicable)*
+### Backend 
 - Node.js
 - Express.js
 
-### Database *(If applicable)*
+### Database 
 - MongoDB
 
 ---
@@ -55,7 +44,7 @@ K-Scents/
 
 ## ⚙️ Installation & Setup
 
-### 1️⃣ Clone the repository
+1️⃣ Clone the repository
 
 ```bash
 git clone https://github.com/rixavvvvv/K-Scents.git
