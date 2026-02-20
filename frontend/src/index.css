@@ -1,0 +1,238 @@
+/* K-Scents — Heritage of Kannauj | Global Theme */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+:root {
+  /* === Brand Palette — warm, earthy, luxurious === */
+  --color-primary: #8B6914;
+  --color-primary-light: #C4973B;
+  --color-primary-dark: #6B4F0E;
+  --color-secondary: #2C1810;
+  --color-accent: #D4A853;
+  --color-accent-rose: #B76E79;
+  --color-accent-green: #5B7B5A;
+  --color-accent-saffron: #E8A83E;
+
+  --bg-primary: #0D0B08;
+  --bg-secondary: #1A1510;
+  --bg-tertiary: #241E16;
+  --bg-card: #1E1912;
+  --bg-card-hover: #2A2318;
+  --bg-overlay: rgba(13, 11, 8, 0.85);
+
+  --text-primary: #F5EDE0;
+  --text-secondary: #B8A98F;
+  --text-muted: #7A6E5D;
+  --text-inverse: #0D0B08;
+
+  --border-color: rgba(196, 151, 59, 0.15);
+  --border-accent: rgba(196, 151, 59, 0.3);
+
+  --glass-bg: rgba(30, 25, 18, 0.6);
+  --glass-border: rgba(196, 151, 59, 0.12);
+  --glass-blur: 20px;
+
+  --gradient-gold: linear-gradient(135deg, #8B6914, #D4A853, #C4973B);
+  --gradient-hero: linear-gradient(135deg, #0D0B08 0%, #1A1510 40%, #241E16 100%);
+  --gradient-card: linear-gradient(145deg, rgba(30, 25, 18, 0.8), rgba(13, 11, 8, 0.9));
+  --gradient-btn: linear-gradient(135deg, #8B6914, #D4A853);
+  --gradient-btn-hover: linear-gradient(135deg, #A07D1C, #E8B960);
+  --gradient-overlay: linear-gradient(180deg, transparent, rgba(13, 11, 8, 0.95));
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.6);
+  --shadow-gold: 0 8px 32px rgba(139, 105, 20, 0.25);
+  --shadow-glow: 0 0 40px rgba(212, 168, 83, 0.15);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  --transition-fast: 0.2s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  --font-heading: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-accent: 'Cormorant Garamond', Georgia, serif;
+
+  font-family: var(--font-body);
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-light);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-light);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes gentlePulse {
+
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    font-size: 14px;
+  }
+}
