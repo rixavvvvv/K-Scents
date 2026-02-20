@@ -70,9 +70,11 @@ K-Scents/
 
 ## ⚙️ Installation & Setup
 
-1️⃣ Clone the repository
+
 
 ```bash
+
+1️⃣ Clone the repository
 git clone https://github.com/rixavvvvv/K-Scents.git
 cd K-Scents
 
