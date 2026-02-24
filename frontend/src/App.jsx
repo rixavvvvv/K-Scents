@@ -10,6 +10,7 @@ import Orders from "./pages/Orders";
 import Profile from "./pages/Profile";
 import AdminDashboard from "./pages/AdminDashboard";
 import Navbar from "./components/Navbar";
+import AuroraBackground from "./components/AuroraBackground";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -18,6 +19,7 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Router>
+          <AuroraBackground />
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />

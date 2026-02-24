@@ -1,89 +1,83 @@
-/* K-Scents App styles */
+/* K-Scents — App-level utilities (dark glassmorphism) */
 #root {
-  width: 100%;
-  margin: 0;
-  padding: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 html,
 body,
 #root {
-  width: 100%;
-  overflow-x: hidden;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 body {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
-/* Toast notifications */
+/* ─── Toast Notifications ─── */
 .toast-container {
-  position: fixed;
-  top: 100px;
-  right: 20px;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .toast {
-  padding: 16px 24px;
-  border-radius: 12px;
-  color: #F5EDE0;
-  font-size: 0.9rem;
-  animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(196, 151, 59, 0.2);
+    padding: 16px 24px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
 }
 
 .toast-success {
-  background: rgba(91, 123, 90, 0.9);
+    background: rgba(90, 224, 160, 0.15);
+    border-color: rgba(90, 224, 160, 0.2);
+    color: #5ae0a0;
 }
 
 .toast-error {
-  background: rgba(183, 110, 121, 0.9);
+    background: rgba(220, 100, 120, 0.15);
+    border-color: rgba(220, 100, 120, 0.2);
+    color: #dc6478;
 }
 
 .toast-info {
-  background: rgba(30, 25, 18, 0.9);
+    background: rgba(123, 111, 197, 0.15);
+    border-color: rgba(123, 111, 197, 0.2);
+    color: #9d93e0;
 }
 
 @keyframes slideIn {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
 
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 @keyframes fadeOut {
-  to {
-    opacity: 0;
-    transform: translateX(100%);
-  }
-}
-
-/* Page transition */
-.page-enter {
-  animation: fadeInUp 0.4s ease forwards;
-}
-
-/* Skeleton loading */
-.skeleton {
-  background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-hover) 50%, var(--bg-card) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: var(--radius-md);
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
 }

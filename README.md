@@ -85,7 +85,7 @@ npm install
 npm start
 
 The application will run at
-http://localhost:3000
+http://localhost:5500
 
 🎯 Future Improvements
 

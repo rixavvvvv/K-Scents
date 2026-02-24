@@ -1,0 +1,175 @@
+/* ─── Gradient 3D Carousel — adapted for K-Scents ─── */
+
+.gc-stage {
+    position: relative;
+    width: 100%;
+    height: 70vh;
+    min-height: 480px;
+    max-height: 700px;
+    background: transparent;
+    overflow: clip;
+    perspective: 1800px;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Background canvas (moving gradient) */
+.gc-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    filter: blur(24px) saturate(1.05);
+    pointer-events: none;
+    border-radius: 24px;
+}
+
+/* Only block native scrolling/gestures in carousel mode */
+.gc-stage.carousel-mode {
+    touch-action: pan-y;
+    cursor: grab;
+}
+
+.gc-stage.carousel-mode.dragging {
+    cursor: grabbing;
+}
+
+/* Cards container */
+.gc-cards {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    transform-style: preserve-3d;
+}
+
+/* Card */
+.gc-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(26vw, 340px);
+    aspect-ratio: 3 / 4;
+    isolation: isolate;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    will-change: transform, filter;
+    transform-origin: 90% center;
+    contain: layout paint;
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+}
+
+.gc-card:hover {
+    box-shadow: 0 12px 48px rgba(212, 175, 55, 0.15);
+}
+
+.gc-card__img {
+    border-radius: 18px;
+    opacity: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transform: translateZ(0);
+    pointer-events: none;
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
+/* Product info overlay on card */
+.gc-card__info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 48px 20px 20px;
+    background: linear-gradient(transparent, rgba(28, 28, 30, 0.75));
+    border-radius: 0 0 18px 18px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.gc-card:hover .gc-card__info {
+    opacity: 1;
+}
+
+.gc-card__name {
+    font-family: var(--font-heading, 'Cinzel', serif);
+    font-size: 1.1rem;
+    color: #fff;
+    margin: 0 0 4px;
+    font-weight: 600;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.gc-card__price {
+    font-family: var(--font-body, 'Inter', sans-serif);
+    font-size: 1rem;
+    color: #d4af37;
+    font-weight: 700;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Loader overlay */
+.gc-loader {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    background: rgba(10, 10, 20, 0.6);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    transition: opacity 0.3s ease, visibility 0.3s linear;
+}
+
+.gc-loader--hide {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.gc-loader__ring {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.15);
+    border-top-color: #d4af37;
+    animation: gc-spin 1s linear infinite;
+}
+
+@keyframes gc-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .gc-stage {
+        height: 55vh;
+        min-height: 380px;
+    }
+
+    .gc-card {
+        width: min(55vw, 260px);
+    }
+}
+
+@media (max-width: 480px) {
+    .gc-card {
+        width: min(65vw, 240px);
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .gc-card {
+        transition: none !important;
+        animation: none !important;
+    }
+}

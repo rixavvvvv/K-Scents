@@ -6,9 +6,10 @@ import { productsAPI, ordersAPI, authAPI } from '../services/api';
 /* ───────── colour helpers ───────── */
 const statusColor = (s) => {
   const map = {
-    pending: '#D4A853', processing: '#5B9BD5', shipped: '#6C9BCF',
-    delivered: '#6B9B6B', cancelled: '#B76E79',
-    active: '#6B9B6B', 'low stock': '#D4A853', 'out of stock': '#B76E79',
+    pending: '#d4af37', processing: '#5B9BD5', shipped: '#6C9BCF',
+    delivered: '#6B9B6B', cancelled: '#dc6478',
+    active: '#6B9B6B', 'low stock': '#d4af37', 'out of stock': '#dc6478',
+    admin: '#9B8FD8', customer: '#6B9B6B',
   };
   return map[(s || '').toLowerCase()] || '#94a3b8';
 };
@@ -160,53 +161,56 @@ function AdminDashboard() {
 
   /* ───────── stat cards data ───────── */
   const statCards = [
-    { label: 'Total Revenue', value: `₹${(stats.totalRevenue || 0).toLocaleString('en-IN')}`, icon: '◆', accent: '#D4A853' },
-    { label: 'Total Orders', value: stats.totalOrders || orders.length, icon: '◈', accent: '#C4973B' },
-    { label: 'Products', value: totalProducts, icon: '❖', accent: '#8B6914' },
-    { label: 'Customers', value: totalCustomers, icon: '✦', accent: '#B76E79' },
+    { label: 'Total Revenue', value: `₹${(stats.totalRevenue || 0).toLocaleString('en-IN')}`, icon: '◆', accent: '#d4af37' },
+    { label: 'Total Orders', value: stats.totalOrders || orders.length, icon: '◈', accent: '#a79fd1' },
+    { label: 'Products', value: totalProducts, icon: '❖', accent: '#bdb6db' },
+    { label: 'Customers', value: totalCustomers, icon: '✦', accent: '#e8c7d8' },
   ];
 
-  /* ================= STYLES ================= */
+  /* ================= STYLES — Lavender Glass ================= */
   const S = {
-    page: { minHeight: '100vh', background: '#0D0B08', fontFamily: "'Inter', sans-serif", color: '#F5F0E8', padding: '100px 24px 40px' },
+    page: { minHeight: '100vh', background: 'var(--gradient-hero)', fontFamily: "'Inter', sans-serif", color: 'var(--text-primary)', padding: '100px 24px 40px' },
     wrapper: { maxWidth: 1280, margin: '0 auto' },
-    header: { background: 'rgba(30,25,18,.55)', backdropFilter: 'blur(24px)', border: '1px solid rgba(212,168,83,.12)', borderRadius: 20, padding: '32px 36px', marginBottom: 28 },
-    title: { fontSize: '2rem', fontWeight: 700, fontFamily: "'Playfair Display',serif", background: 'linear-gradient(135deg,#D4A853,#8B6914)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: '0 0 6px' },
-    subtitle: { color: '#A69474', fontSize: 14, margin: 0 },
+    header: { background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 20, padding: '32px 36px', marginBottom: 28 },
+    title: { fontSize: '2rem', fontWeight: 700, fontFamily: "'Cinzel','Playfair Display',serif", background: 'linear-gradient(135deg,#a79fd1,#d4af37)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: '0 0 6px' },
+    subtitle: { color: 'var(--text-muted)', fontSize: 14, margin: 0 },
     tabs: { display: 'flex', gap: 8, marginTop: 24, flexWrap: 'wrap' },
     tab: (active) => ({
-      padding: '10px 22px', borderRadius: 10, border: active ? '1px solid #D4A853' : '1px solid rgba(212,168,83,.15)',
-      background: active ? 'linear-gradient(135deg,#8B6914,#D4A853)' : 'rgba(30,25,18,.5)',
-      color: active ? '#0D0B08' : '#A69474', cursor: 'pointer', fontSize: 13, fontWeight: 600,
+      padding: '10px 22px', borderRadius: 10,
+      border: active ? '1px solid #d4af37' : '1px solid rgba(255,255,255,0.08)',
+      background: active ? 'linear-gradient(135deg, #d4af37, #e8c44a)' : 'rgba(255,255,255,0.04)',
+      color: active ? '#0a0a14' : 'var(--text-muted)', cursor: 'pointer', fontSize: 13, fontWeight: 600,
       transition: 'all .25s', letterSpacing: '.4px',
     }),
     statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(230px,1fr))', gap: 18, marginBottom: 28 },
     statCard: (accent) => ({
-      background: 'rgba(30,25,18,.55)', backdropFilter: 'blur(20px)', border: `1px solid ${accent}25`,
-      borderRadius: 16, padding: '24px 28px', transition: 'all .3s',
+      background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
+      border: `1px solid ${accent}20`, borderRadius: 16, padding: '24px 28px', transition: 'all .3s',
     }),
-    card: { background: 'rgba(30,25,18,.55)', backdropFilter: 'blur(20px)', border: '1px solid rgba(212,168,83,.1)', borderRadius: 16, padding: 28, marginBottom: 22 },
+    card: { background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 16, padding: 28, marginBottom: 22 },
     searchBar: {
-      width: '100%', maxWidth: 380, padding: '11px 18px', background: 'rgba(30,25,18,.6)',
-      border: '1px solid rgba(212,168,83,.18)', borderRadius: 10, color: '#F5F0E8', fontSize: 13,
+      width: '100%', maxWidth: 380, padding: '11px 18px', background: 'rgba(255,255,255,0.04)',
+      border: '1px solid rgba(255,255,255,0.08)', borderRadius: 10, color: 'var(--text-primary)', fontSize: 13,
+      outline: 'none', fontFamily: 'var(--font-body)',
     },
     table: { width: '100%', borderCollapse: 'collapse', marginTop: 16 },
-    th: { padding: '14px 16px', textAlign: 'left', borderBottom: '1px solid rgba(212,168,83,.12)', fontWeight: 600, fontSize: 12, color: '#A69474', letterSpacing: '.5px', textTransform: 'uppercase' },
-    td: { padding: '14px 16px', borderBottom: '1px solid rgba(212,168,83,.06)', fontSize: 13 },
-    btnPrimary: { padding: '10px 22px', background: 'linear-gradient(135deg,#8B6914,#D4A853)', border: 'none', borderRadius: 10, color: '#0D0B08', cursor: 'pointer', fontWeight: 600, fontSize: 13, transition: 'all .25s' },
-    btnDanger: { padding: '8px 16px', background: 'rgba(183,110,121,.15)', border: '1px solid rgba(183,110,121,.3)', borderRadius: 8, color: '#B76E79', cursor: 'pointer', fontSize: 12, fontWeight: 600, transition: 'all .25s' },
-    btnGhost: { padding: '8px 16px', background: 'rgba(212,168,83,.08)', border: '1px solid rgba(212,168,83,.2)', borderRadius: 8, color: '#D4A853', cursor: 'pointer', fontSize: 12, fontWeight: 600, transition: 'all .25s' },
-    overlay: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,.65)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 },
-    modal: { background: '#1E1912', border: '1px solid rgba(212,168,83,.15)', borderRadius: 20, padding: 36, width: '90%', maxWidth: 560, maxHeight: '85vh', overflowY: 'auto' },
-    input: { width: '100%', padding: '11px 14px', background: 'rgba(30,25,18,.7)', border: '1px solid rgba(212,168,83,.18)', borderRadius: 8, color: '#F5F0E8', fontSize: 13, boxSizing: 'border-box' },
-    select: { width: '100%', padding: '11px 14px', background: '#1A1610', border: '1px solid rgba(212,168,83,.18)', borderRadius: 8, color: '#F5F0E8', fontSize: 13, boxSizing: 'border-box' },
-    label: { display: 'block', fontSize: 12, fontWeight: 600, color: '#A69474', marginBottom: 6, letterSpacing: '.4px' },
+    th: { padding: '14px 16px', textAlign: 'left', borderBottom: '1px solid rgba(255,255,255,0.06)', fontWeight: 600, fontSize: 12, color: 'var(--text-muted)', letterSpacing: '.5px', textTransform: 'uppercase' },
+    td: { padding: '14px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)', fontSize: 13 },
+    btnPrimary: { padding: '10px 22px', background: 'linear-gradient(135deg, #d4af37, #e8c44a)', border: 'none', borderRadius: 10, color: '#0a0a14', cursor: 'pointer', fontWeight: 600, fontSize: 13, transition: 'all .25s' },
+    btnDanger: { padding: '8px 16px', background: 'rgba(220,100,120,.08)', border: '1px solid rgba(220,100,120,.2)', borderRadius: 8, color: '#dc6478', cursor: 'pointer', fontSize: 12, fontWeight: 600, transition: 'all .25s' },
+    btnGhost: { padding: '8px 16px', background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.08)', borderRadius: 8, color: 'var(--text-secondary)', cursor: 'pointer', fontSize: 12, fontWeight: 600, transition: 'all .25s' },
+    overlay: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 },
+    modal: { background: 'rgba(15,15,30,0.92)', backdropFilter: 'blur(30px)', WebkitBackdropFilter: 'blur(30px)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 20, padding: 36, width: '90%', maxWidth: 560, maxHeight: '85vh', overflowY: 'auto', color: 'var(--text-primary)' },
+    input: { width: '100%', padding: '11px 14px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, color: 'var(--text-primary)', fontSize: 13, boxSizing: 'border-box', outline: 'none', fontFamily: 'var(--font-body)' },
+    select: { width: '100%', padding: '11px 14px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, color: 'var(--text-primary)', fontSize: 13, boxSizing: 'border-box', outline: 'none' },
+    label: { display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 6, letterSpacing: '.4px' },
     formGroup: { marginBottom: 18 },
     messageBar: (type) => ({
       position: 'fixed', top: 90, left: '50%', transform: 'translateX(-50%)', zIndex: 2000,
       padding: '12px 28px', borderRadius: 12, fontSize: 14, fontWeight: 600, animation: 'fadeInUp .3s',
-      background: type === 'error' ? 'rgba(183,110,121,.9)' : 'rgba(139,105,20,.9)',
-      color: '#FFF', border: type === 'error' ? '1px solid #B76E79' : '1px solid #D4A853',
+      background: type === 'error' ? 'rgba(220,100,120,.85)' : 'rgba(212,175,55,.9)',
+      color: '#FFF', border: type === 'error' ? '1px solid #dc6478' : '1px solid #d4af37',
+      backdropFilter: 'blur(10px)',
     }),
   };
 
@@ -214,9 +218,9 @@ function AdminDashboard() {
   const Skeleton = () => (
     <div style={{ ...S.statsGrid }}>
       {[1, 2, 3, 4].map(i => (
-        <div key={i} style={{ ...S.statCard('#D4A853'), height: 110, background: 'rgba(30,25,18,.4)' }}>
-          <div style={{ width: '60%', height: 14, background: 'rgba(212,168,83,.08)', borderRadius: 6, marginBottom: 12 }} />
-          <div style={{ width: '40%', height: 28, background: 'rgba(212,168,83,.08)', borderRadius: 6 }} />
+        <div key={i} style={{ ...S.statCard('#a79fd1'), height: 110 }}>
+          <div style={{ width: '60%', height: 14, background: 'rgba(255,255,255,0.15)', borderRadius: 6, marginBottom: 12 }} />
+          <div style={{ width: '40%', height: 28, background: 'rgba(255,255,255,0.12)', borderRadius: 6 }} />
         </div>
       ))}
     </div>
@@ -234,7 +238,7 @@ function AdminDashboard() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
             <div>
               <h1 style={S.title}>Admin Dashboard</h1>
-              <p style={S.subtitle}>Manage your K-Scents heritage store</p>
+              <p style={S.subtitle}>Manage your K-Scents luxury store</p>
             </div>
             <Link to="/" style={{ ...S.btnGhost, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 22px' }}>
               ← Back to Store
@@ -260,10 +264,10 @@ function AdminDashboard() {
                 <div key={i} style={S.statCard(s.accent)}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div>
-                      <p style={{ color: '#A69474', fontSize: 12, margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: '.5px' }}>{s.label}</p>
-                      <h3 style={{ fontSize: '1.75rem', fontWeight: 700, margin: 0, fontFamily: "'Playfair Display',serif" }}>{s.value}</h3>
+                      <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: '.5px' }}>{s.label}</p>
+                      <h3 style={{ fontSize: '1.75rem', fontWeight: 700, margin: 0, fontFamily: "'Cinzel','Playfair Display',serif" }}>{s.value}</h3>
                     </div>
-                    <span style={{ fontSize: 28, color: s.accent, opacity: .45 }}>{s.icon}</span>
+                    <span style={{ fontSize: 28, color: s.accent, opacity: .55 }}>{s.icon}</span>
                   </div>
                 </div>
               ))}
@@ -272,26 +276,26 @@ function AdminDashboard() {
             {/* Quick stats row */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 14, marginBottom: 28 }}>
               <div style={{ ...S.card, padding: '18px 22px', textAlign: 'center' }}>
-                <p style={{ color: '#D4A853', fontSize: 22, fontWeight: 700, margin: '0 0 4px' }}>{stats.pendingOrders || 0}</p>
-                <p style={{ color: '#A69474', fontSize: 12, margin: 0, textTransform: 'uppercase', letterSpacing: '.4px' }}>Pending Orders</p>
+                <p style={{ color: '#d4af37', fontSize: 22, fontWeight: 700, margin: '0 0 4px' }}>{stats.pendingOrders || 0}</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: 0, textTransform: 'uppercase', letterSpacing: '.4px' }}>Pending Orders</p>
               </div>
               <div style={{ ...S.card, padding: '18px 22px', textAlign: 'center' }}>
                 <p style={{ color: '#6B9B6B', fontSize: 22, fontWeight: 700, margin: '0 0 4px' }}>{stats.completedOrders || 0}</p>
-                <p style={{ color: '#A69474', fontSize: 12, margin: 0, textTransform: 'uppercase', letterSpacing: '.4px' }}>Completed</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: 0, textTransform: 'uppercase', letterSpacing: '.4px' }}>Completed</p>
               </div>
               <div style={{ ...S.card, padding: '18px 22px', textAlign: 'center' }}>
                 <p style={{ color: '#B76E79', fontSize: 22, fontWeight: 700, margin: '0 0 4px' }}>
                   {products.filter(p => (p.stock || 0) <= 5 && (p.stock || 0) > 0).length}
                 </p>
-                <p style={{ color: '#A69474', fontSize: 12, margin: 0, textTransform: 'uppercase', letterSpacing: '.4px' }}>Low Stock Items</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: 0, textTransform: 'uppercase', letterSpacing: '.4px' }}>Low Stock Items</p>
               </div>
             </div>
 
             {/* Recent orders */}
             <div style={S.card}>
-              <h2 style={{ fontSize: '1.1rem', fontWeight: 600, margin: '0 0 16px', fontFamily: "'Playfair Display',serif" }}>Recent Orders</h2>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 600, margin: '0 0 16px', fontFamily: "'Cinzel','Playfair Display',serif" }}>Recent Orders</h2>
               {orders.length === 0 ? (
-                <p style={{ color: '#A69474', fontSize: 14 }}>No orders yet.</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: 14 }}>No orders yet.</p>
               ) : (
                 <div style={{ overflowX: 'auto' }}>
                   <table style={S.table}>
@@ -324,13 +328,13 @@ function AdminDashboard() {
 
             {/* Low stock alert */}
             {products.filter(p => (p.stock || 0) <= 5 && (p.stock || 0) > 0).length > 0 && (
-              <div style={{ ...S.card, borderColor: 'rgba(183,110,121,.2)' }}>
-                <h2 style={{ fontSize: '1.1rem', fontWeight: 600, margin: '0 0 16px', fontFamily: "'Playfair Display',serif", color: '#B76E79' }}>⚠ Low Stock Alert</h2>
+              <div style={{ ...S.card, borderColor: 'rgba(220,100,120,.15)' }}>
+                <h2 style={{ fontSize: '1.1rem', fontWeight: 600, margin: '0 0 16px', fontFamily: "'Cinzel','Playfair Display',serif", color: '#dc6478' }}>⚠ Low Stock Alert</h2>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
                   {products.filter(p => (p.stock || 0) <= 5 && (p.stock || 0) > 0).map(p => (
-                    <div key={p._id} style={{ background: 'rgba(183,110,121,.08)', border: '1px solid rgba(183,110,121,.15)', borderRadius: 10, padding: '12px 18px' }}>
+                    <div key={p._id} style={{ background: 'rgba(220,100,120,.06)', border: '1px solid rgba(220,100,120,.12)', borderRadius: 10, padding: '12px 18px' }}>
                       <p style={{ fontSize: 13, fontWeight: 600, margin: '0 0 4px' }}>{p.name}</p>
-                      <p style={{ fontSize: 12, color: '#B76E79', margin: 0 }}>Only {p.stock} left</p>
+                      <p style={{ fontSize: 12, color: '#dc6478', margin: 0 }}>Only {p.stock} left</p>
                     </div>
                   ))}
                 </div>
@@ -343,14 +347,14 @@ function AdminDashboard() {
         {!loading && activeTab === 'products' && (
           <div style={S.card}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 14, marginBottom: 20 }}>
-              <h2 style={{ fontSize: '1.1rem', fontWeight: 600, margin: 0, fontFamily: "'Playfair Display',serif" }}>Product Management ({filteredProducts.length})</h2>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 600, margin: 0, fontFamily: "'Cinzel','Playfair Display',serif" }}>Product Management ({filteredProducts.length})</h2>
               <button style={S.btnPrimary} onClick={() => openProductForm()}>+ Add Product</button>
             </div>
 
             <input type="text" placeholder="Search products…" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} style={S.searchBar} />
 
             {filteredProducts.length === 0 ? (
-              <p style={{ color: '#A69474', fontSize: 14, marginTop: 20 }}>No products found.</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: 14, marginTop: 20 }}>No products found.</p>
             ) : (
               <div style={{ overflowX: 'auto' }}>
                 <table style={S.table}>
@@ -371,7 +375,7 @@ function AdminDashboard() {
                         <tr key={p._id}>
                           <td style={S.td}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                              <img src={p.image} alt="" style={{ width: 40, height: 40, borderRadius: 8, objectFit: 'cover', background: '#1A1610' }} onError={e => { e.target.style.display = 'none'; }} />
+                              <img src={p.image} alt="" style={{ width: 40, height: 40, borderRadius: 8, objectFit: 'cover', background: 'rgba(255,255,255,0.1)' }} onError={e => { e.target.style.display = 'none'; }} />
                               <span style={{ fontWeight: 500 }}>{p.name}</span>
                             </div>
                           </td>
@@ -401,12 +405,12 @@ function AdminDashboard() {
         {/* ═══════════════════ ORDERS ═══════════════════ */}
         {!loading && activeTab === 'orders' && (
           <div style={S.card}>
-            <h2 style={{ fontSize: '1.1rem', fontWeight: 600, margin: '0 0 20px', fontFamily: "'Playfair Display',serif" }}>Order Management ({filteredOrders.length})</h2>
+            <h2 style={{ fontSize: '1.1rem', fontWeight: 600, margin: '0 0 20px', fontFamily: "'Cinzel','Playfair Display',serif" }}>Order Management ({filteredOrders.length})</h2>
 
             <input type="text" placeholder="Search by order ID or customer…" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} style={S.searchBar} />
 
             {filteredOrders.length === 0 ? (
-              <p style={{ color: '#A69474', fontSize: 14, marginTop: 20 }}>No orders found.</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: 14, marginTop: 20 }}>No orders found.</p>
             ) : (
               <div style={{ overflowX: 'auto' }}>
                 <table style={S.table}>
@@ -425,7 +429,7 @@ function AdminDashboard() {
                     {filteredOrders.map(o => (
                       <tr key={o._id}>
                         <td style={S.td}>#{o._id?.slice(-6)}</td>
-                        <td style={S.td}>{o.user?.name || 'N/A'}<br /><span style={{ color: '#A69474', fontSize: 11 }}>{o.user?.email}</span></td>
+                        <td style={S.td}>{o.user?.name || 'N/A'}<br /><span style={{ color: 'var(--text-muted)', fontSize: 11 }}>{o.user?.email}</span></td>
                         <td style={S.td}>{o.items?.length || 0}</td>
                         <td style={S.td}>₹{(o.totalAmount || 0).toLocaleString('en-IN')}</td>
                         <td style={S.td}><Badge status={o.status} /></td>
@@ -456,12 +460,12 @@ function AdminDashboard() {
         {/* ═══════════════════ CUSTOMERS ═══════════════════ */}
         {!loading && activeTab === 'customers' && (
           <div style={S.card}>
-            <h2 style={{ fontSize: '1.1rem', fontWeight: 600, margin: '0 0 20px', fontFamily: "'Playfair Display',serif" }}>Customer Management ({filteredCustomers.length})</h2>
+            <h2 style={{ fontSize: '1.1rem', fontWeight: 600, margin: '0 0 20px', fontFamily: "'Cinzel','Playfair Display',serif" }}>Customer Management ({filteredCustomers.length})</h2>
 
             <input type="text" placeholder="Search by name or email…" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} style={S.searchBar} />
 
             {filteredCustomers.length === 0 ? (
-              <p style={{ color: '#A69474', fontSize: 14, marginTop: 20 }}>No customers found.</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: 14, marginTop: 20 }}>No customers found.</p>
             ) : (
               <div style={{ overflowX: 'auto' }}>
                 <table style={S.table}>
@@ -480,7 +484,7 @@ function AdminDashboard() {
                           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                             <div style={{
                               width: 36, height: 36, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              background: 'linear-gradient(135deg,#8B6914,#D4A853)', color: '#0D0B08', fontWeight: 700, fontSize: 14,
+                              background: 'linear-gradient(135deg,#a79fd1,#d4af37)', color: '#fff', fontWeight: 700, fontSize: 14,
                             }}>
                               {c.name?.[0]?.toUpperCase() || '?'}
                             </div>
@@ -506,16 +510,16 @@ function AdminDashboard() {
           <div style={S.overlay} onClick={e => e.target === e.currentTarget && setShowProductForm(false)}>
             <div style={S.modal}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-                <h2 style={{ fontSize: '1.2rem', fontWeight: 600, margin: 0, fontFamily: "'Playfair Display',serif" }}>
+                <h2 style={{ fontSize: '1.2rem', fontWeight: 600, margin: 0, fontFamily: "'Cinzel','Playfair Display',serif" }}>
                   {editingProduct ? 'Edit Product' : 'Add New Product'}
                 </h2>
-                <button onClick={() => setShowProductForm(false)} style={{ background: 'none', border: 'none', color: '#A69474', cursor: 'pointer', fontSize: 22 }}>✕</button>
+                <button onClick={() => setShowProductForm(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 22 }}>✕</button>
               </div>
 
               <form onSubmit={saveProduct}>
                 <div style={S.formGroup}>
                   <label style={S.label}>Product Name *</label>
-                  <input style={S.input} required value={productForm.name} onChange={e => setProductForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g. Gulab Attar" />
+                  <input style={S.input} required value={productForm.name} onChange={e => setProductForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g. Lavender Mist" />
                 </div>
 
                 <div style={S.formGroup}>
@@ -577,25 +581,25 @@ function AdminDashboard() {
           <div style={S.overlay} onClick={e => e.target === e.currentTarget && setSelectedOrder(null)}>
             <div style={S.modal}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-                <h2 style={{ fontSize: '1.2rem', fontWeight: 600, margin: 0, fontFamily: "'Playfair Display',serif" }}>
+                <h2 style={{ fontSize: '1.2rem', fontWeight: 600, margin: 0, fontFamily: "'Cinzel','Playfair Display',serif" }}>
                   Order #{selectedOrder._id?.slice(-6)}
                 </h2>
-                <button onClick={() => setSelectedOrder(null)} style={{ background: 'none', border: 'none', color: '#A69474', cursor: 'pointer', fontSize: 22 }}>✕</button>
+                <button onClick={() => setSelectedOrder(null)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 22 }}>✕</button>
               </div>
 
               <div style={{ marginBottom: 18 }}>
-                <p style={{ color: '#A69474', fontSize: 12, marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.4px' }}>Customer</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: 12, marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.4px' }}>Customer</p>
                 <p style={{ fontSize: 14, margin: 0 }}>{selectedOrder.user?.name || 'N/A'} — {selectedOrder.user?.email || ''}</p>
               </div>
 
               <div style={{ marginBottom: 18 }}>
-                <p style={{ color: '#A69474', fontSize: 12, marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.4px' }}>Status</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: 12, marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.4px' }}>Status</p>
                 <Badge status={selectedOrder.status} />
               </div>
 
               {selectedOrder.shippingAddress && (
                 <div style={{ marginBottom: 18 }}>
-                  <p style={{ color: '#A69474', fontSize: 12, marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.4px' }}>Shipping Address</p>
+                  <p style={{ color: 'var(--text-muted)', fontSize: 12, marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.4px' }}>Shipping Address</p>
                   <p style={{ fontSize: 13, margin: 0, lineHeight: 1.6 }}>
                     {selectedOrder.shippingAddress.fullName && <>{selectedOrder.shippingAddress.fullName}<br /></>}
                     {selectedOrder.shippingAddress.street && <>{selectedOrder.shippingAddress.street}<br /></>}
@@ -606,14 +610,14 @@ function AdminDashboard() {
               )}
 
               <div style={{ marginBottom: 18 }}>
-                <p style={{ color: '#A69474', fontSize: 12, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '.4px' }}>Items</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: 12, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '.4px' }}>Items</p>
                 {selectedOrder.items?.map((item, idx) => (
-                  <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid rgba(212,168,83,.06)' }}>
+                  <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,.06)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                       {item.image && <img src={item.image} alt="" style={{ width: 36, height: 36, borderRadius: 6, objectFit: 'cover' }} />}
                       <div>
                         <p style={{ fontSize: 13, fontWeight: 500, margin: 0 }}>{item.name}</p>
-                        <p style={{ fontSize: 11, color: '#A69474', margin: 0 }}>Qty: {item.quantity}</p>
+                        <p style={{ fontSize: 11, color: 'var(--text-muted)', margin: 0 }}>Qty: {item.quantity}</p>
                       </div>
                     </div>
                     <span style={{ fontSize: 13, fontWeight: 600 }}>₹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
@@ -621,13 +625,13 @@ function AdminDashboard() {
                 ))}
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 0', borderTop: '1px solid rgba(212,168,83,.15)' }}>
-                <span style={{ fontSize: 14, fontWeight: 600, color: '#D4A853' }}>Total</span>
-                <span style={{ fontSize: 18, fontWeight: 700, fontFamily: "'Playfair Display',serif" }}>₹{(selectedOrder.totalAmount || 0).toLocaleString('en-IN')}</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 0', borderTop: '1px solid rgba(255,255,255,.08)' }}>
+                <span style={{ fontSize: 14, fontWeight: 600, color: '#d4af37' }}>Total</span>
+                <span style={{ fontSize: 18, fontWeight: 700, fontFamily: "'Cinzel','Playfair Display',serif" }}>₹{(selectedOrder.totalAmount || 0).toLocaleString('en-IN')}</span>
               </div>
 
               <div style={{ marginTop: 16 }}>
-                <p style={{ color: '#A69474', fontSize: 12, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '.4px' }}>Update Status</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: 12, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '.4px' }}>Update Status</p>
                 <div style={{ display: 'flex', gap: 8 }}>
                   <select
                     value={selectedOrder.status}

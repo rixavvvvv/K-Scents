@@ -10,11 +10,11 @@ export default defineConfig({
     sourcemap: false,
   },
   server: {
-    port: 3000,
+    port: 5500,
     host: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
+        target: 'http://localhost:5100',
         changeOrigin: true,
       },
     },
