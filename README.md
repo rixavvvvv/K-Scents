@@ -102,7 +102,7 @@ http://localhost:5500
 
 👨‍💻 Author
 
-Rishav
+Rishabh
 Final Year CSE Student | Full Stack Developer
 
 GitHub: https://github.com/rixavvvvv
