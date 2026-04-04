@@ -10,7 +10,7 @@ function Products() {
     const { addToCart } = useCart();
     const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
     const [searchTerm, setSearchTerm] = useState('');
-    const [priceRange, setPriceRange] = useState([0, 50000]);
+    const [priceRange] = useState([0, 50000]);
     const [sortBy, setSortBy] = useState('featured');
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);

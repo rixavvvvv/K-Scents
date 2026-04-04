@@ -3,11 +3,15 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
+const User = require('./models/User');
 
 const app = express();
 
-// Connect to database
-connectDB();
+const DEFAULT_LOGIN_USER = {
+    name: 'Knight',
+    email: 'knight@kscents.com',
+    password: 'Kinght@123',
+};
 
 // Middleware
 app.use(cors());
@@ -67,8 +71,27 @@ app.get('/', (req, res) => {
 const { errorHandler } = require('./middleware/errorHandler');
 app.use(errorHandler);
 
-// Start server
-const PORT = process.env.PORT || 5100;
-app.listen(PORT, () => {
-    console.log(`🌿 K-Scents server running on port ${PORT}`);
-});
+const ensureDefaultLoginUser = async () => {
+    let user = await User.findOne({ email: DEFAULT_LOGIN_USER.email });
+
+    if (!user) {
+        user = new User(DEFAULT_LOGIN_USER);
+    } else {
+        user.name = DEFAULT_LOGIN_USER.name;
+        user.password = DEFAULT_LOGIN_USER.password;
+    }
+
+    await user.save();
+};
+
+const startServer = async () => {
+    await connectDB();
+    await ensureDefaultLoginUser();
+
+    const PORT = process.env.PORT || 5100;
+    app.listen(PORT, () => {
+        console.log(`🌿 K-Scents server running on port ${PORT}`);
+    });
+};
+
+startServer();

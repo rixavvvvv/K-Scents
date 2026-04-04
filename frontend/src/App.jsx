@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
@@ -15,23 +16,29 @@ import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 
 function App() {
+  useEffect(() => {
+    alert('Login credentials:\nUsername: Knight\nPassword: Kinght@123');
+  }, []);
+
   return (
     <AuthProvider>
       <CartProvider>
         <Router>
           <AuroraBackground />
           <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/products/:id" element={<ProductDetail />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/wishlist" element={<Wishlist />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-          </Routes>
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/products/:id" element={<ProductDetail />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+            </Routes>
+          </div>
         </Router>
       </CartProvider>
     </AuthProvider>

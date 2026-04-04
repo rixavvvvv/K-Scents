@@ -1,5 +1,3 @@
-
-=======
 # 🌸 K-Scents – Premium Fragrance E-Commerce Platform
 
 K-Scents is a modern e-commerce web application designed for browsing and purchasing premium perfumes and fragrances.  
@@ -110,4 +108,3 @@ GitHub: https://github.com/rixavvvvv
 📜 License
 
 This project is licensed under the MIT License.
->>>>>>> 7b4ad9ffe3e2f8a58718d385ffec86189a051497

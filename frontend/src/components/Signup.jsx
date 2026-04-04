@@ -29,7 +29,9 @@ export default function Signup({ onClose, switchToLogin }) {
         e.preventDefault();
         if (formData.password !== formData.confirmPassword) { setLocalError('Passwords do not match'); return; }
         if (formData.password.length < 6) { setLocalError('Password must be at least 6 characters'); return; }
-        try { await register(formData.name, formData.email, formData.password); onClose(); } catch { }
+        try { await register(formData.name, formData.email, formData.password); onClose(); } catch {
+            // Error state is surfaced by AuthContext and rendered by this modal.
+        }
     };
 
     const displayError = localError || error;

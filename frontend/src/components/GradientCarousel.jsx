@@ -541,7 +541,9 @@ export default function GradientCarousel({ products = [], onSelect }) {
             // Vertical drag — release capture so the page scrolls normally
             if (s.dragLocked === 'v') {
                 s.dragging = false;
-                try { stage.releasePointerCapture(e.pointerId); } catch { }
+                try { stage.releasePointerCapture(e.pointerId); } catch {
+                    // Ignore if pointer capture has already been released.
+                }
                 stage.classList.remove('dragging');
                 return;
             }
@@ -559,7 +561,9 @@ export default function GradientCarousel({ products = [], onSelect }) {
         const onPointerUp = (e) => {
             if (!s.dragging) return;
             s.dragging = false;
-            try { stage.releasePointerCapture(e.pointerId); } catch { }
+            try { stage.releasePointerCapture(e.pointerId); } catch {
+                // Ignore if pointer capture has already been released.
+            }
             if (s.dragLocked === 'h') s.vX = -s.lastDelta * DRAG_SENS;
             stage.classList.remove('dragging');
         };

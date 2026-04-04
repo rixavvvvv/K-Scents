@@ -11,7 +11,9 @@ const getWishlist = asyncHandler(async (req, res) => {
             path: 'wishlist',
             select: 'name price finalPrice image category rating numReviews stock discount_percentage'
         });
-        res.json(user.wishlist || []);
+
+        const wishlist = (user?.wishlist || []).filter(Boolean);
+        res.json(wishlist);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching wishlist', error: error.message });
     }

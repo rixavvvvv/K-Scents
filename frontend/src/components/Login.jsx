@@ -23,7 +23,9 @@ export default function Login({ onClose, switchToSignup }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try { await login(formData.email, formData.password); onClose(); } catch { }
+        try { await login(formData.email, formData.password); onClose(); } catch {
+            // Error state is surfaced by AuthContext and rendered by this modal.
+        }
     };
 
     return (

@@ -235,27 +235,27 @@ const s = {
     },
 };
 
+const FALLBACK_PRODUCTS = [
+    { _id: "1", name: "Gulab Attar", price: 1200, category: "perfumes", description: "Pure rose attar distilled in brass deg using traditional Kannauj hydro-distillation.", image: "https://images.unsplash.com/photo-1594035910387-fbd1a83b0f1b?w=600&q=80" },
+    { _id: "2", name: "Mitti Attar", price: 1500, category: "perfumes", description: "The essence of first rain on parched earth — Kannauj's most beloved signature scent.", image: "https://images.unsplash.com/photo-1615634260167-c8cdede054de?w=600&q=80" },
+    { _id: "3", name: "Shamama Blend", price: 2800, category: "perfumes", description: "A complex blend of 40+ botanicals. An opulent warm fragrance for special occasions.", image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=600&q=80" },
+    { _id: "4", name: "Kewda Attar", price: 1800, category: "perfumes", description: "Extracted from pandanus flowers — sweet, green, and intensely tropical.", image: "https://images.unsplash.com/photo-1592945403244-b3faa12c5c0b?w=600&q=80" },
+    { _id: "5", name: "Oudh Royale", price: 4500, category: "perfumes", description: "Premium agarwood oud sourced from aged trees, aged in sandalwood oil.", image: "https://images.unsplash.com/photo-1587017539504-67cfbddac569?w=600&q=80" },
+    { _id: "6", name: "Hina Attar", price: 2200, category: "perfumes", description: "A nightly blooming fragrance crafted from mehendi & sandalwood base.", image: "https://images.unsplash.com/photo-1615639164213-aab04da93c7c?w=600&q=80" },
+];
+
 function Home() {
     const navigate = useNavigate();
     const [featuredProducts, setFeaturedProducts] = useState([]);
-
-    const fallbackProducts = [
-        { _id: "1", name: "Gulab Attar", price: 1200, category: "perfumes", description: "Pure rose attar distilled in brass deg using traditional Kannauj hydro-distillation.", image: "https://images.unsplash.com/photo-1594035910387-fbd1a83b0f1b?w=600&q=80" },
-        { _id: "2", name: "Mitti Attar", price: 1500, category: "perfumes", description: "The essence of first rain on parched earth — Kannauj's most beloved signature scent.", image: "https://images.unsplash.com/photo-1615634260167-c8cdede054de?w=600&q=80" },
-        { _id: "3", name: "Shamama Blend", price: 2800, category: "perfumes", description: "A complex blend of 40+ botanicals. An opulent warm fragrance for special occasions.", image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=600&q=80" },
-        { _id: "4", name: "Kewda Attar", price: 1800, category: "perfumes", description: "Extracted from pandanus flowers — sweet, green, and intensely tropical.", image: "https://images.unsplash.com/photo-1592945403244-b3faa12c5c0b?w=600&q=80" },
-        { _id: "5", name: "Oudh Royale", price: 4500, category: "perfumes", description: "Premium agarwood oud sourced from aged trees, aged in sandalwood oil.", image: "https://images.unsplash.com/photo-1587017539504-67cfbddac569?w=600&q=80" },
-        { _id: "6", name: "Hina Attar", price: 2200, category: "perfumes", description: "A nightly blooming fragrance crafted from mehendi & sandalwood base.", image: "https://images.unsplash.com/photo-1615639164213-aab04da93c7c?w=600&q=80" },
-    ];
 
     useEffect(() => {
         const fetchFeatured = async () => {
             try {
                 const res = await productsAPI.getAll({ limit: 6 });
                 const data = res.products || res;
-                setFeaturedProducts(Array.isArray(data) && data.length ? data : fallbackProducts);
+                setFeaturedProducts(Array.isArray(data) && data.length ? data : FALLBACK_PRODUCTS);
             } catch {
-                setFeaturedProducts(fallbackProducts);
+                setFeaturedProducts(FALLBACK_PRODUCTS);
             }
         };
         fetchFeatured();
@@ -401,7 +401,7 @@ function Home() {
 
                 <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 20px' }}>
                     <GradientCarousel
-                        products={(featuredProducts.length ? featuredProducts : fallbackProducts).slice(0, 10)}
+                        products={(featuredProducts.length ? featuredProducts : FALLBACK_PRODUCTS).slice(0, 10)}
                         onSelect={(product) => navigate(`/products/${product._id}`)}
                     />
                 </div>

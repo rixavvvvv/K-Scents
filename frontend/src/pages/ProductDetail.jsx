@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { productsAPI } from '../services/api';
 import { useCart } from '../context/CartContext';
 
 function ProductDetail() {
@@ -17,20 +16,38 @@ function ProductDetail() {
     const [imgLoaded, setImgLoaded] = useState(false);
 
     useEffect(() => {
+        const controller = new AbortController();
+
         const fetchProduct = async () => {
             try {
                 setLoading(true);
-                const data = await productsAPI.getById(id);
+                setError(null);
+                const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5100/api'}/products/${id}`, {
+                    signal: controller.signal,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Product not found');
+                }
+
+                const data = await response.json();
                 setProduct(data);
             } catch (err) {
+                if (err.name === 'AbortError') return;
                 console.error('Error fetching product:', err);
                 setError('Product not found');
             } finally {
-                setLoading(false);
+                if (!controller.signal.aborted) {
+                    setLoading(false);
+                }
             }
         };
         fetchProduct();
         window.scrollTo(0, 0);
+
+        return () => {
+            controller.abort();
+        };
     }, [id]);
 
     const handleAddToCart = () => {
@@ -41,10 +58,16 @@ function ProductDetail() {
         }
     };
 
+    const handleBuyNow = () => {
+        if (!product) return;
+        addToCart(product, quantity);
+        requestAnimationFrame(() => navigate('/checkout'));
+    };
+
     if (loading) {
         return (
-            <div style={{ minHeight: '100vh', paddingTop: 120, padding: '120px 40px 80px' }}>
-                <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 60 }}>
+            <div style={{ minHeight: '100vh', paddingTop: 120, padding: '120px 20px 80px' }}>
+                <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 40 }}>
                     <div style={{ height: 500, borderRadius: 24, background: 'linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite' }} />
                     <div>
                         <div style={{ height: 32, width: '60%', borderRadius: 12, background: 'rgba(255,255,255,0.04)', marginBottom: 16, animation: 'shimmer 1.5s infinite' }} />
@@ -71,15 +94,21 @@ function ProductDetail() {
         );
     }
 
-    const inStock = product.stock > 0;
+    const stockValue = Number.isFinite(product.stock)
+        ? product.stock
+        : Number.isFinite(product.countInStock)
+            ? product.countInStock
+            : null;
+    const inStock = stockValue === null ? true : stockValue > 0;
+    const maxQuantity = stockValue && stockValue > 0 ? stockValue : 99;
     const stars = product.ratings?.average || 0;
     const reviewCount = product.ratings?.count || 0;
 
     return (
-        <div style={{ minHeight: '100vh', paddingTop: 100 }}>
+        <div style={{ minHeight: '100vh', paddingTop: 100, position: 'relative', zIndex: 2 }}>
             {/* Breadcrumb */}
-            <div style={{ maxWidth: 1200, margin: '0 auto', padding: '20px 40px' }}>
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+            <div style={{ maxWidth: 1200, margin: '0 auto', padding: '20px' }}>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                     <Link to="/" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Home</Link>
                     <span>›</span>
                     <Link to="/products" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Collection</Link>
@@ -89,10 +118,10 @@ function ProductDetail() {
             </div>
 
             {/* Main Product Section */}
-            <div style={{ maxWidth: 1200, margin: '0 auto', padding: '20px 40px 60px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 60, alignItems: 'start' }}>
+            <div style={{ maxWidth: 1200, margin: '0 auto', padding: '20px 20px 60px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 40, alignItems: 'start' }}>
                 {/* Image */}
                 <motion.div
-                    style={{ position: 'sticky', top: 120 }}
+                    style={{ position: 'relative' }}
                     initial={{ opacity: 0, x: -30 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5 }}
@@ -163,6 +192,57 @@ function ProductDetail() {
                         {product.description}
                     </p>
 
+                    {/* Quantity + Add to Cart */}
+                    <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap', marginBottom: 16 }}>
+                        <div style={{
+                            display: 'flex', alignItems: 'center',
+                            background: 'rgba(255,255,255,0.04)',
+                            border: '1px solid rgba(255,255,255,0.08)',
+                            borderRadius: 12, overflow: 'hidden',
+                            backdropFilter: 'blur(10px)',
+                        }}>
+                            <button onClick={() => setQuantity(Math.max(1, quantity - 1))} style={{ width: 44, height: 44, background: 'none', border: 'none', color: 'var(--text-primary)', fontSize: '1.2rem', cursor: 'pointer', transition: 'background 0.2s' }}
+                                onMouseEnter={e => e.target.style.background = 'rgba(212,175,55,0.08)'}
+                                onMouseLeave={e => e.target.style.background = 'none'}>−</button>
+                            <span style={{ width: 50, textAlign: 'center', color: 'var(--text-primary)', fontWeight: 600, fontSize: '1rem' }}>{quantity}</span>
+                            <button onClick={() => setQuantity(Math.min(maxQuantity, quantity + 1))} style={{ width: 44, height: 44, background: 'none', border: 'none', color: 'var(--text-primary)', fontSize: '1.2rem', cursor: 'pointer', transition: 'background 0.2s' }}
+                                onMouseEnter={e => e.target.style.background = 'rgba(212,175,55,0.08)'}
+                                onMouseLeave={e => e.target.style.background = 'none'}>+</button>
+                        </div>
+
+                        <button onClick={handleAddToCart} disabled={!inStock} style={{
+                            flex: '1 1 260px', minWidth: 220, padding: '14px 32px', borderRadius: 12, fontSize: '1rem', fontWeight: 600, cursor: inStock ? 'pointer' : 'not-allowed',
+                            background: added ? 'rgba(107,155,107,0.15)' : inStock ? 'linear-gradient(135deg, #d4af37, #e8c44a)' : 'rgba(255,255,255,0.04)',
+                            color: added ? '#6B9B6B' : inStock ? '#0a0a14' : 'var(--text-muted)',
+                            transition: 'all 0.3s ease',
+                            boxShadow: inStock && !added ? '0 8px 24px rgba(212,175,55,0.25)' : 'none',
+                            border: added ? '1px solid rgba(107,155,107,0.3)' : '1px solid transparent',
+                        }}>
+                            {added ? '✓ Added to Cart' : inStock ? 'Add to Cart' : 'Out of Stock'}
+                        </button>
+                    </div>
+
+                    <button
+                        onClick={handleBuyNow}
+                        disabled={!inStock}
+                        style={{
+                            width: '100%',
+                            marginBottom: 28,
+                            padding: '14px 32px',
+                            borderRadius: 12,
+                            border: '1px solid rgba(255,255,255,0.12)',
+                            fontSize: '1rem',
+                            fontWeight: 600,
+                            cursor: inStock ? 'pointer' : 'not-allowed',
+                            background: inStock ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.03)',
+                            color: inStock ? 'var(--text-primary)' : 'var(--text-muted)',
+                            backdropFilter: 'blur(10px)',
+                            transition: 'all 0.3s ease',
+                        }}
+                    >
+                        Buy Now
+                    </button>
+
                     {/* Fragrance Notes */}
                     {product.fragrance_notes && (
                         <div style={{
@@ -207,7 +287,7 @@ function ProductDetail() {
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                 <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#6B9B6B' }} />
                                 <span style={{ color: '#6B9B6B', fontSize: '0.9rem', fontWeight: 500 }}>
-                                    In Stock {product.stock <= 10 && `— Only ${product.stock} left`}
+                                    In Stock {stockValue !== null && stockValue <= 10 && `— Only ${stockValue} left`}
                                 </span>
                             </div>
                         ) : (
@@ -216,36 +296,6 @@ function ProductDetail() {
                                 <span style={{ color: '#dc6478', fontSize: '0.9rem', fontWeight: 500 }}>Out of Stock</span>
                             </div>
                         )}
-                    </div>
-
-                    {/* Quantity + Add to Cart */}
-                    <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 32 }}>
-                        <div style={{
-                            display: 'flex', alignItems: 'center',
-                            background: 'rgba(255,255,255,0.04)',
-                            border: '1px solid rgba(255,255,255,0.08)',
-                            borderRadius: 12, overflow: 'hidden',
-                            backdropFilter: 'blur(10px)',
-                        }}>
-                            <button onClick={() => setQuantity(Math.max(1, quantity - 1))} style={{ width: 44, height: 44, background: 'none', border: 'none', color: 'var(--text-primary)', fontSize: '1.2rem', cursor: 'pointer', transition: 'background 0.2s' }}
-                                onMouseEnter={e => e.target.style.background = 'rgba(212,175,55,0.08)'}
-                                onMouseLeave={e => e.target.style.background = 'none'}>−</button>
-                            <span style={{ width: 50, textAlign: 'center', color: 'var(--text-primary)', fontWeight: 600, fontSize: '1rem' }}>{quantity}</span>
-                            <button onClick={() => setQuantity(Math.min(product.stock || 99, quantity + 1))} style={{ width: 44, height: 44, background: 'none', border: 'none', color: 'var(--text-primary)', fontSize: '1.2rem', cursor: 'pointer', transition: 'background 0.2s' }}
-                                onMouseEnter={e => e.target.style.background = 'rgba(212,175,55,0.08)'}
-                                onMouseLeave={e => e.target.style.background = 'none'}>+</button>
-                        </div>
-
-                        <button onClick={handleAddToCart} disabled={!inStock} style={{
-                            flex: 1, padding: '14px 32px', borderRadius: 12, fontSize: '1rem', fontWeight: 600, cursor: inStock ? 'pointer' : 'not-allowed',
-                            background: added ? 'rgba(107,155,107,0.15)' : inStock ? 'linear-gradient(135deg, #d4af37, #e8c44a)' : 'rgba(255,255,255,0.04)',
-                            color: added ? '#6B9B6B' : inStock ? '#0a0a14' : 'var(--text-muted)',
-                            transition: 'all 0.3s ease',
-                            boxShadow: inStock && !added ? '0 8px 24px rgba(212,175,55,0.25)' : 'none',
-                            border: added ? '1px solid rgba(107,155,107,0.3)' : '1px solid transparent',
-                        }}>
-                            {added ? '✓ Added to Cart' : inStock ? 'Add to Cart' : 'Out of Stock'}
-                        </button>
                     </div>
 
                     {/* Trust badges */}

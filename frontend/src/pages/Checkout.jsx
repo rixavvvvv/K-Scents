@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +18,13 @@ function Checkout() {
     const [orderPlaced, setOrderPlaced] = useState(null);
     const [error, setError] = useState('');
 
+    useEffect(() => {
+        if (!isAuthenticated) return;
+        if (items.length === 0 && !orderPlaced) {
+            navigate('/cart', { replace: true });
+        }
+    }, [isAuthenticated, items.length, orderPlaced, navigate]);
+
     const subtotal = getCartTotal();
     const shipping = subtotal >= 500 ? 0 : 49;
     const total = subtotal + shipping;
@@ -36,8 +43,11 @@ function Checkout() {
     }
 
     if (items.length === 0 && !orderPlaced) {
-        navigate('/cart');
-        return null;
+        return (
+            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: 100 }}>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Redirecting to cart...</p>
+            </div>
+        );
     }
 
     if (orderPlaced) {

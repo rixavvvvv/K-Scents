@@ -5,7 +5,7 @@ const asyncHandler = require('express-async-handler');
 // Generate JWT Token
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '30d'
+        expiresIn: process.env.JWT_EXPIRE || '30d'
     });
 };
 
@@ -88,12 +88,18 @@ const loginUser = asyncHandler(async (req, res) => {
         // Validation
         if (!email || !password) {
             return res.status(400).json({
-                message: 'Please provide email and password'
+                message: 'Please provide username/email and password'
             });
         }
 
+        const identifier = String(email).trim();
+        const isEmail = identifier.includes('@');
+        const userQuery = isEmail
+            ? { email: identifier.toLowerCase() }
+            : { name: { $regex: `^${identifier}$`, $options: 'i' } };
+
         // Find user and include password for comparison
-        const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
+        const user = await User.findOne(userQuery).select('+password');
 
         if (!user) {
             return res.status(401).json({

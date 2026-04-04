@@ -5,7 +5,7 @@ const CartContext = createContext();
 // Cart reducer to manage cart state
 const cartReducer = (state, action) => {
   switch (action.type) {
-    case 'ADD_TO_CART':
+    case 'ADD_TO_CART': {
       const existingItem = state.items.find(item => item._id === action.payload._id);
       if (existingItem) {
         return {
@@ -16,12 +16,12 @@ const cartReducer = (state, action) => {
               : item
           )
         };
-      } else {
-        return {
-          ...state,
-          items: [...state.items, { ...action.payload, quantity: action.payload.quantity || 1 }]
-        };
       }
+      return {
+        ...state,
+        items: [...state.items, { ...action.payload, quantity: action.payload.quantity || 1 }]
+      };
+    }
 
     case 'REMOVE_FROM_CART':
       return {

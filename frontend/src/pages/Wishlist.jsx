@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -13,28 +13,43 @@ function Wishlist() {
   const [loading, setLoading] = useState(true);
   const [removing, setRemoving] = useState(null);
 
+  const getProductId = (product) => product?._id || product?.id;
+
   useEffect(() => {
     if (!isAuthenticated) return;
     fetchWishlist();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, fetchWishlist]);
 
-  const fetchWishlist = async () => {
+  const fetchWishlist = useCallback(async () => {
     try {
       setLoading(true);
       const data = await wishlistAPI.get();
-      setItems(data || []);
+      const rawItems = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.wishlist)
+          ? data.wishlist
+          : Array.isArray(data?.items)
+            ? data.items
+            : [];
+
+      const normalizedProducts = rawItems
+        .map((item) => item?.product || item)
+        .filter((product) => getProductId(product));
+
+      setItems(normalizedProducts);
     } catch (err) {
       console.error('Error fetching wishlist:', err);
+      setItems([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const handleRemove = async (productId) => {
     setRemoving(productId);
     try {
       await wishlistAPI.remove(productId);
-      setItems(prev => prev.filter(item => (item._id || item.product?._id) !== productId));
+      setItems(prev => prev.filter(item => getProductId(item) !== productId));
     } catch (err) {
       console.error('Error removing:', err);
     } finally {
@@ -90,21 +105,21 @@ function Wishlist() {
         {!loading && items.length > 0 && (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 24 }}>
             <AnimatePresence>
-              {items.map((item, idx) => {
-                const product = item.product || item;
+              {items.map((product, idx) => {
+                const productId = getProductId(product);
                 return (
-                  <motion.div key={product._id} layout initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }}
+                  <motion.div key={productId} layout initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }}
                     transition={{ duration: 0.4, delay: idx * 0.06 }}
                     style={{ background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderRadius: 20, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.06)', transition: 'all 0.3s' }}>
-                    <div style={{ position: 'relative', height: 220, background: 'rgba(255,255,255,0.05)', cursor: 'pointer' }} onClick={() => navigate(`/products/${product._id}`)}>
+                    <div style={{ position: 'relative', height: 220, background: 'rgba(255,255,255,0.05)', cursor: 'pointer' }} onClick={() => navigate(`/products/${productId}`)}>
                       <img src={product.image || 'https://images.unsplash.com/photo-1594035910387-fea081ac66e0?w=400'} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      <button onClick={(e) => { e.stopPropagation(); handleRemove(product._id); }} disabled={removing === product._id}
+                      <button onClick={(e) => { e.stopPropagation(); handleRemove(productId); }} disabled={removing === productId}
                         style={{ position: 'absolute', top: 12, right: 12, width: 36, height: 36, borderRadius: '50%', background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(220,100,120,0.2)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(8px)', color: '#dc6478', fontSize: 16, transition: 'all 0.3s' }}>
                         ✕
                       </button>
                     </div>
                     <div style={{ padding: 20 }}>
-                      <h3 style={{ fontFamily: 'var(--font-heading)', color: 'var(--text-primary)', fontSize: '1.05rem', marginBottom: 8, cursor: 'pointer' }} onClick={() => navigate(`/products/${product._id}`)}>
+                      <h3 style={{ fontFamily: 'var(--font-heading)', color: 'var(--text-primary)', fontSize: '1.05rem', marginBottom: 8, cursor: 'pointer' }} onClick={() => navigate(`/products/${productId}`)}>
                         {product.name}
                       </h3>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
